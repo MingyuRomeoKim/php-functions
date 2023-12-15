@@ -1,0 +1,28 @@
+{
+    "name": "mingyukim/php-functions",
+    "description": "자주 사용하는 기능을 function화 하여 라이브러리로 만들어보자",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MingyuRomeoKim",
+            "email": "rlaalsrb0466@naver.com",
+            "homepage": "https://min-nine.tistory.com",
+            "role": "Developer"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=8.1.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": []
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MingyuKim\\PhpFunctions\\": "src/"
+        },
+        "classmap": ["src/"]
+    }
+}
