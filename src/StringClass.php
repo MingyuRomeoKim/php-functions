@@ -5,23 +5,71 @@ namespace MingyuKim\PhpFunctions;
 class StringClass
 {
     /**
-     * @param string $camelTypeString
+     * @param string $camelCaseString
      * @return string
-     * @description 카멜 형식의 스트링을 스네이크 형식으로 치환하는 함수
+     * @description 카멜 케이스 스트링을 스네이크 케이스로 치환하는 함수
      */
-    public function camelToSnake(string $camelTypeString): string
+    public function camelToSnake(string $camelCaseString): string
     {
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelTypeString));
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelCaseString));
     }
 
     /**
-     * @param string $snakeTypeString
+     * @param $camelCaseString
      * @return string
-     * @description 스네이크 형식의 스트링을 카멜 형식으로 치환하는 함수
+     * @description 카멜 케이스 스트링을 케밥 케이스로 치환하는 함수.
      */
-    public function snakeToCamel(string $snakeTypeString): string
+    public function camelToKebab($camelCaseString): string
     {
-        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $snakeTypeString))));
+        // camel case를 언더스코어로 대체하여 snake case로 변환
+        $snakeCaseString = preg_replace('/([a-z])([A-Z])/', '$1-$2', $camelCaseString);
+
+        // 모든 문자를 소문자로 변환
+        return strtolower($snakeCaseString);
+    }
+
+    /**
+     * @param string $snakeCaseString
+     * @return string
+     * @description 스네이크 케이스 스트링을 카멜 케이스로 치환하는 함수
+     */
+    public function snakeToCamel(string $snakeCaseString): string
+    {
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $snakeCaseString))));
+    }
+
+    /**
+     * @param $snakeCase
+     * @return string
+     * @description 스네이크 케이스 스트링을 케밥 케이스로 치환하는 함수
+     */
+    public function snakeToKebab($snakeCase): string
+    {
+        // 언더스코어를 하이픈으로 대체하여 kebab case로 변환
+        return str_replace('_', '-', $snakeCase);
+    }
+
+    /**
+     * @param string $kebabCaseString
+     * @return string
+     * @description 케밥 케이스 스트링을 스네이크 케이스로 치환하는 함수
+     */
+    public function kebabToSnake(string $kebabCaseString): string
+    {
+        return str_replace('-', '_', $kebabCaseString);
+    }
+
+    /**
+     * @param string $kebabCaseString
+     * @return string
+     * @description 케밥 케이스 스트링을 카멜 케이스로 치환하는 함수
+     */
+    public function kebabToCamel(string $kebabCaseString): string
+    {
+        // kebab case를 언더스코어로 대체하여 snake case로 변환
+        $snakeCaseString = $this->kebabToSnake(kebabCaseString: $kebabCaseString);
+        // snake case를 camel case로 변환
+        return $this->snakeToCamel(snakeCaseString: $snakeCaseString);
     }
 
     /**
@@ -150,5 +198,67 @@ class StringClass
             return false; // 유효하지 않은 경로 또는 문자열인 경우 false 반환
         }
         return true;
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     * @description 주어진 string 문자열이 Json 형식인지 확인하여 true 혹은 false 반환.
+     */
+    public function isJsonString(string $string): bool
+    {
+        // 주어진 문자열이 JSON 형식인지 확인
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     * @description 주어진 string 문자열이 uuid 형식인지 확인하여 true 혹은 false 반환.
+     */
+    public function isUuidString(string $string): bool
+    {
+        $uuidPattern = '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/';
+        return (bool)preg_match($uuidPattern, $string);
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     * @description 주어진 string 문자열이 ulid 형식인지 확인하여 true 혹은 false 반환.
+     */
+    public function isUlidString(string $string): bool
+    {
+        $ulidPattern = '/^[0-7a-z]{26}$/';
+        return (bool)preg_match($ulidPattern, $string);
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     * @description 주어진 string 문자열이 url 형식인지 확인하여 true 혹은 false 반환.
+     */
+    function isUrlString(string $string): bool
+    {
+        return filter_var($string, FILTER_VALIDATE_URL) !== false;
+    }
+
+    /**
+     * @param string $string
+     * @param int $limit
+     * @param string $after
+     * @return string
+     * @description 주어진 string 문자열에서 limit 개수만큼 자른 후 after 문자열을 연결지어 반환.
+     */
+    public function getTruncateString(string $string, int $limit, string $after = '...'): string
+    {
+        // 문자열이 제한 길이보다 짧으면 그대로 반환
+        if (strlen($string) <= $limit) {
+            return $string;
+        }
+
+        // 문자열을 제한 길이까지 자르고 $after를 추가하여 반환
+        return substr($string, 0, $limit) . $after;
     }
 }
