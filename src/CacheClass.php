@@ -4,6 +4,13 @@ namespace MingyuKim\PhpFunctions;
 
 class CacheClass
 {
+    /**
+     * @param string $key
+     * @param mixed $data
+     * @param int $expiration
+     * @return void
+     * @description Cache Driver가 File일 때 Cache 생성.
+     */
     public function createFileCache(string $key, mixed $data, int $expiration = 3600): void
     {
         $filename = 'cache/' . md5($key) . '.cache';
@@ -16,6 +23,11 @@ class CacheClass
         file_put_contents($filename, serialize($cacheData));
     }
 
+    /**
+     * @param string $key
+     * @return mixed
+     * @description Cache Driver가 File일 때 Cache 읽기.
+     */
     public function readFileCache(string $key): mixed
     {
         $filename = 'cache/' . md5($key) . '.cache';
@@ -35,6 +47,11 @@ class CacheClass
         return null;
     }
 
+    /**
+     * @param string $key
+     * @return void
+     * @description Cache Driver가 File일 때 Cache 삭제.
+     */
     public function clearFileCache(string $key): void
     {
         $filename = 'cache/' . md5($key) . '.cache';
@@ -44,6 +61,14 @@ class CacheClass
         }
     }
 
+    /**
+     * @param string $key
+     * @param mixed $data
+     * @param \Redis $redis
+     * @param int $expiration
+     * @return void
+     * @description Cache Driver가 Redis일 때 Cache 생성.
+     */
     public function createRedisCache(string $key, mixed $data, \Redis $redis, int $expiration = 3600): void
     {
         $cacheData = [
@@ -54,6 +79,12 @@ class CacheClass
         $redis->setex($key, $expiration, serialize($cacheData));
     }
 
+    /**
+     * @param string $key
+     * @param \Redis $redis
+     * @return mixed
+     * @description Cache Driver가 Redis일 때 Cache 읽기.
+     */
     function readRedisCache(string $key, \Redis $redis): mixed
     {
         $cachedData = $redis->get($key);
@@ -73,6 +104,12 @@ class CacheClass
         return null;
     }
 
+    /**
+     * @param string $key
+     * @param \Redis $redis
+     * @return void
+     * @description Cache Driver가 Redis일 때 Cache 삭제.
+     */
     public function clearRedisCache(string $key, \Redis $redis): void
     {
         $redis->del($key);
