@@ -11,7 +11,7 @@ class CacheClass
      * @return void
      * @description Cache Driver가 File일 때 Cache 생성.
      */
-    public function createFileCache(string $key, mixed $data, int $expiration = 3600): void
+    public static function createFileCache(string $key, mixed $data, int $expiration = 3600): void
     {
         $filename = 'cache/' . md5($key) . '.cache';
 
@@ -28,7 +28,7 @@ class CacheClass
      * @return mixed
      * @description Cache Driver가 File일 때 Cache 읽기.
      */
-    public function readFileCache(string $key): mixed
+    public static function readFileCache(string $key): mixed
     {
         $filename = 'cache/' . md5($key) . '.cache';
 
@@ -40,7 +40,7 @@ class CacheClass
                 return $cacheData['data'];
             } else {
                 // 캐시 만료 시 삭제
-                $this->clearFileCache(key: $key);
+                static::clearFileCache(key: $key);
             }
         }
 
@@ -52,7 +52,7 @@ class CacheClass
      * @return void
      * @description Cache Driver가 File일 때 Cache 삭제.
      */
-    public function clearFileCache(string $key): void
+    public static function clearFileCache(string $key): void
     {
         $filename = 'cache/' . md5($key) . '.cache';
 
@@ -69,7 +69,7 @@ class CacheClass
      * @return void
      * @description Cache Driver가 Redis일 때 Cache 생성.
      */
-    public function createRedisCache(string $key, mixed $data, \Redis $redis, int $expiration = 3600): void
+    public static function createRedisCache(string $key, mixed $data, \Redis $redis, int $expiration = 3600): void
     {
         $cacheData = [
             'data' => $data,
@@ -85,7 +85,7 @@ class CacheClass
      * @return mixed
      * @description Cache Driver가 Redis일 때 Cache 읽기.
      */
-    function readRedisCache(string $key, \Redis $redis): mixed
+    public static function readRedisCache(string $key, \Redis $redis): mixed
     {
         $cachedData = $redis->get($key);
 
@@ -97,7 +97,7 @@ class CacheClass
                 return $cacheData['data'];
             } else {
                 // 만료된 경우 삭제
-                $this->clearRedisCache(key: $key, redis: $redis);
+                static::clearRedisCache(key: $key, redis: $redis);
             }
         }
 
@@ -110,7 +110,7 @@ class CacheClass
      * @return void
      * @description Cache Driver가 Redis일 때 Cache 삭제.
      */
-    public function clearRedisCache(string $key, \Redis $redis): void
+    public static function clearRedisCache(string $key, \Redis $redis): void
     {
         $redis->del($key);
     }
