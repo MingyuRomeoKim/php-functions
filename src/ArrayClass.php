@@ -105,4 +105,16 @@ class ArrayClass
 
         return $sequentialArray;
     }
+
+    /**
+     * @param array $aArray
+     * @param array $bArray
+     * @return array
+     * @description 두 배열을 합치면서 중복 값을 제거하여 반환.
+     */
+    public static function mergeArraysRemoveDuplicateValues(array $aArray, array $bArray): array
+    {
+        $mergedArray = array_merge($aArray, $bArray);
+        return array_unique($mergedArray);
+    }
 }
